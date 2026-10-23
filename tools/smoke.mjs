@@ -35,9 +35,12 @@ await withRenderer(async ({ page, shot, browser, url }) => {
     report.samples.push({ id: scene.id, time: scene.start + 3, sha256: await pixelHash(buffer) });
   }
 
+  console.log('Canvas, 20 scenes and seek determinism passed. Checking controls…');
+  // Release the export page's software WebGL resources before the UI pass.
+  await page.close();
   const ui = await browser.newPage();
   await ui.setViewport({ width: 1440, height: 1120, deviceScaleFactor: 1 });
-  await ui.goto(url, { waitUntil: 'networkidle0' });
+  await ui.goto(url, { waitUntil: 'domcontentloaded', timeout: 90000 });
   await ui.waitForFunction(() => window.pelican?.ready || window.pelicanError, { timeout: 90000 });
   const startupError = await ui.evaluate(() => window.pelicanError);
   assert.equal(startupError, undefined);

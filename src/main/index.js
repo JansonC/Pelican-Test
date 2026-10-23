@@ -2,6 +2,8 @@ import p5 from 'p5';
 import './styles.css';
 import { DURATION, WIDTH, HEIGHT, formatTime, normalizeTime, locate } from '../beat/timeline.js';
 import { SCENES } from '../scenes/catalog.js';
+import { sceneRenderers } from '../scenes/index.js';
+import { UI_GLYPHS } from '../scenes/vertical.js';
 import { paperTexture } from '../kit/canvas.js';
 import { prepareBrush } from '../kit/brush.js';
 import { createCompositor } from './compositor.js';
@@ -14,7 +16,7 @@ document.querySelector('#app').innerHTML = `
   <div class="shell">
     <header class="masthead">
       <div class="identity"><div class="monogram" aria-hidden="true">鹈</div><div><h1>鹈鹕测试</h1><div class="subtitle">The Pelican Test · An improbable art history</div></div></div>
-      <div class="reel-meta"><strong>分镜预演 / STORY REEL</strong><br />20 个时代 · 02:17 · 无声</div>
+      <div class="reel-meta"><strong>三幕精做 / STYLE STUDIES</strong><br />20 个时代 · 02:17 · 无声</div>
     </header>
     <section class="screen-wrap" aria-label="动画预览">
       <div id="screen"></div><div class="loading" role="status">正在展开这段尚待考证的艺术史……</div>
@@ -121,10 +123,11 @@ async function start() {
   });
 
   // Explicitly request every title/caption glyph before any export or thumbnail.
-  const glyphs = `${document.body.textContent}人类自古以来就痴迷于画鹈鹕骑自行车。——早在自行车被发明之前。图一骑行摹本艺术通史卷一虚构书名截至目前，人类共提交了20份答卷。鹈鹕本人对此尚未发表评论。新闻发布会${SCENES.map((scene) => scene.zh + scene.en + scene.era).join('')}`;
+  const glyphs = `${document.body.textContent}人类自古以来就痴迷于画鹈鹕骑自行车。——早在自行车被发明之前。图一骑行摹本艺术通史卷一虚构书名截至目前，人类共提交了20份答卷。鹈鹕本人对此尚未发表评论。新闻发布会牧养时代山有千仞行者一骑${UI_GLYPHS}${SCENES.map((scene) => scene.zh + scene.en + scene.era).join('')}`;
   await Promise.all([400, 600].map((weight) => document.fonts.load(`${weight} 32px "Noto Serif SC Variable"`, glyphs)));
   await document.fonts.ready;
   brush = await prepareBrush(renderer, brushRuntime);
+  for (const scene of sceneRenderers) scene.prepare?.({ brush });
   compositor = createCompositor({ paper: paperTexture() });
   renderAt(currentTime);
   document.querySelector('.loading').remove();

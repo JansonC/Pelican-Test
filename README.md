@@ -2,7 +2,7 @@
 
 一只鹈鹕沿连续道路骑车，穿过画框，在二十个时代与画风之间旅行。所有画面用代码绘制，音频采用程序合成。
 
-当前提供无声骨架预览。二十幕均明确标记为画风占位；正式美术与音乐依 [PLAN.md](PLAN.md) 分阶段制作。
+阶段 1 已验收，当前提供阶段 2 无声预览：撒哈拉岩画、宋代山水、竖屏短视频完成美术制作，其余 17 幕保留标名占位。完整时间轴仍为 137 秒；后续美术与音乐依 [PLAN.md](PLAN.md) 分阶段制作。
 
 ## 环境与启动
 
@@ -27,6 +27,24 @@ npm run smoke
 ```
 
 `smoke` 启动无头 Chrome 验证 20 幕、中文字体、p5.brush 笔触、随机跳转的确定性、播放控制与移动端布局，并生成 `out/preview.png` 和 `out/verification/smoke.json`。导出工具自动启动并关闭临时开发服务器。
+
+三幕分别位于 5–11、29–35、113–119 秒。`?t=30.6` 可查看宋画宽景，`?t=32.15` 查看推近后的骑手。
+阶段 2 的单独复查命令：
+
+```powershell
+npm run review:stage2
+npm run sheet -- --times "5.5,7,7.8,10.5,29.5,30.6,32.15,34.5,113.5,115.8,116.5,118.5" --cols 4 --out out/stage2/contact-sheet.png
+npm run demo:stage2
+```
+
+`review:stage2` 导出 5 张全尺寸关键帧和播放器截图，检查乱序跳转、9:16 黑边并记录绘制耗时。
+`demo:stage2` 默认以 30 fps 导出三段各 7 秒、含相邻画框的无声 MP4，再合成
+`out/stage2/three-studies.mp4`。这是阶段验收样片帧率；最终成片帧率仍可单独选择。
+添加 `--resume` 可复用源码指纹一致的导出帧；`--overwrite` 可重编码已有样片。
+源码改变后使用新的 `--tag`（例如 `--tag stage2-final`）保留旧帧并创建新导出目录。
+该命令同时从导出帧生成三幕接触表和过框边界表；也可为 `sheet` 提供
+`--frames frames/stage2-sahara-30,frames/stage2-song-30,frames/stage2-vertical-30`，
+以现有逐帧文件制表。此模式要求采样时刻位于实际帧网格上。
 
 ## 截图、接触表与视频
 
@@ -56,7 +74,7 @@ npm run encode -- --frames frames/full-30 --out out/pelican-silent.mp4
 src/kit/       绘图、材质、固定随机数与 p5.brush 接入
 src/beat/      节拍、时长、场景定位与帧时间
 src/rig/       骨骼姿势、两段腿部求解与骨架绘制
-src/scenes/    每幕一个文件，当前使用明确标注的占位绘制
+src/scenes/    每幕一个文件，3 幕正式美术与 17 幕标名占位
 src/main/      播放器、合成、道路、镜头、Intro 与 Outro
 tools/         环境检查、截图、接触表、逐帧渲染、编码与浏览器验证
 test/          时间边界、分段帧序列与踩踏约束验证

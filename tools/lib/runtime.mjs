@@ -54,7 +54,9 @@ export async function withRenderer(callback, { url } = {}) {
     page.on('pageerror', (error) => errors.push(error.message));
     const target = new URL(url);
     target.searchParams.set('export', '1');
-    await page.goto(target.href, { waitUntil: 'networkidle0', timeout: 90000 });
+    // The film exposes readiness after fonts, brush masks and cached paintings.
+    // Vite's network activity is not the signal that the canvas is ready.
+    await page.goto(target.href, { waitUntil: 'domcontentloaded', timeout: 90000 });
     await page.waitForFunction(() => window.pelican?.ready || window.pelicanError, { timeout: 90000 });
     const startupError = await page.evaluate(() => window.pelicanError);
     if (startupError) throw new Error(`Preview initialization: ${startupError}`);

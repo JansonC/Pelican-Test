@@ -4,6 +4,7 @@ import { poseAt, drawPelican } from '../rig/pelican.js';
 import { text, line, SANS, withAlpha } from '../kit/canvas.js';
 import { smooth, lerp } from '../kit/math.js';
 import { locate, STAGE_WIDTH as W, PANEL_WIDTH, TRAVEL_SPEED, ROAD_Y, quantizeTime } from '../beat/timeline.js';
+import { portraitAt } from './presentation.js';
 
 const PAPER = '#eee8da';
 const INK = '#354136';
@@ -17,57 +18,82 @@ export function createCompositor({ paper }) {
   }
 
   function drawWorld(ctx, t, { rider = true } = {}) {
+    const portrait = portraitAt(t);
+    const riderX = portrait.riderX;
     const travel = (t - 5) * TRAVEL_SPEED;
-    const camera = travel - RIDER_X;
+    const camera = travel - riderX;
     const distance = Math.abs((t - 5 + 3) % 6 - 3);
     const zoom = 1 + 0.022 * Math.exp(-((distance / 0.18) ** 2));
     ctx.save();
-    ctx.translate(RIDER_X, ROAD_Y);
+    ctx.translate(riderX, ROAD_Y);
     ctx.scale(zoom, zoom);
-    ctx.translate(-RIDER_X, -ROAD_Y);
+    ctx.translate(-riderX, -ROAD_Y);
 
     for (let index = -1; index < 21; index += 1) {
       const left = index * PANEL_WIDTH - camera;
       if (left > W + 100 || left + PANEL_WIDTH < -100) continue;
       const scene = SCENES[Math.max(0, Math.min(19, index))];
+      const renderer = sceneRenderers[Math.max(0, Math.min(19, index))];
       ctx.save();
       ctx.beginPath();
       ctx.rect(left, -100, PANEL_WIDTH, 1200);
       ctx.clip();
       ctx.fillStyle = index < 0 ? PAPER : scene.paper;
       ctx.fillRect(left, -100, PANEL_WIDTH, 1200);
-      grain(ctx, 0.8);
+      if (!renderer.finished || index < 0 || index > 19) grain(ctx, 0.8);
 
       if (index >= 0 && index < 20) {
         const titleX = Math.min(left + PANEL_WIDTH - 760, Math.max(left + 125, 110));
-        text(ctx, `THE PELICAN TEST     /     ${String(index + 1).padStart(2, '0')}`, titleX, 145, { size: 17, color: scene.ink, family: SANS });
-        text(ctx, scene.zh, titleX, 233, { size: 61, color: scene.ink, weight: 600 });
-        text(ctx, scene.en, titleX + 3, 277, { size: 25, color: scene.ink });
-        text(ctx, scene.era, titleX + 3, 324, { size: 24, color: scene.ink });
-        ctx.save();
-        ctx.translate(left + (PANEL_WIDTH - 1000) / 2, 0);
         const characterT = scene.updateHz ? quantizeTime(t, scene.updateHz) : t;
-        sceneRenderers[index].renderAt(ctx, { t, localT: t - scene.start, pose: poseAt(characterT) });
+        const frame = { t, localT: t - scene.start, pose: poseAt(characterT) };
+        const localView = renderer.cameraAt?.(frame.localT) || { zoom: 1, riderScale: 1 };
+        const view = { zoom: localView.zoom, riderScale: localView.riderScale * portrait.riderScale };
+        const origin = left + (PANEL_WIDTH - 1000) / 2;
+        const localRiderX = riderX - origin;
+        ctx.save();
+        ctx.translate(origin, 0);
+        // Local lenses pivot on the tire contact. Their transforms never change
+        // the world road, portal position, or the neighboring panel's camera.
+        ctx.translate(localRiderX, ROAD_Y);
+        ctx.scale(view.zoom, view.zoom);
+        ctx.translate(-localRiderX, -ROAD_Y);
+        renderer.renderAt(ctx, frame);
+        if (rider && renderer.renderRider) {
+          renderer.renderRider(ctx, frame.pose, {
+            x: localRiderX, y: ROAD_Y - 73 * view.riderScale, scale: view.riderScale,
+          });
+        }
         ctx.restore();
+        if (renderer.renderTitle) renderer.renderTitle(ctx, { x: titleX, ...frame });
+        else if (!renderer.finished) {
+          text(ctx, `THE PELICAN TEST     /     ${String(index + 1).padStart(2, '0')}`, titleX, 145, { size: 17, color: scene.ink, family: SANS });
+          text(ctx, scene.zh, titleX, 233, { size: 61, color: scene.ink, weight: 600 });
+          text(ctx, scene.en, titleX + 3, 277, { size: 25, color: scene.ink });
+          text(ctx, scene.era, titleX + 3, 324, { size: 24, color: scene.ink });
+        }
       }
 
-      line(ctx, [[left, ROAD_Y], [left + PANEL_WIDTH, ROAD_Y]], scene.ink, 2.5);
-      line(ctx, [[left, ROAD_Y + 58], [left + PANEL_WIDTH, ROAD_Y + 58]], scene.ink, 1.2);
-      for (let marker = Math.floor(camera / 120) * 120; marker < camera + W + 200; marker += 120) {
-        line(ctx, [[marker - camera, ROAD_Y + 30], [marker - camera + 38, ROAD_Y + 30]], scene.accent, 1.5);
+      if (!renderer.finished || index < 0 || index > 19) {
+        line(ctx, [[left, ROAD_Y], [left + PANEL_WIDTH, ROAD_Y]], scene.ink, 2.5);
+        line(ctx, [[left, ROAD_Y + 58], [left + PANEL_WIDTH, ROAD_Y + 58]], scene.ink, 1.2);
+        for (let marker = Math.floor(camera / 120) * 120; marker < camera + W + 200; marker += 120) {
+          line(ctx, [[marker - camera, ROAD_Y + 30], [marker - camera + 38, ROAD_Y + 30]], scene.accent, 1.5);
+        }
       }
-      if (rider) {
+      if (rider && (!renderer.finished || index < 0 || index > 19)) {
         const characterT = scene.updateHz ? quantizeTime(t, scene.updateHz) : t;
-        drawPelican(ctx, poseAt(characterT), { x: RIDER_X, y: ROAD_Y - 73, ink: scene.ink, accent: scene.accent });
+        drawPelican(ctx, poseAt(characterT), { x: riderX, y: ROAD_Y - 73 * portrait.riderScale, scale: portrait.riderScale, ink: scene.ink, accent: scene.accent });
       }
       ctx.restore();
     }
 
+    if (t >= 113 && t <= 119.13) sceneRenderers[18].renderOverlay(ctx, { t });
+
     for (let index = 0; index <= 20; index += 1) {
       const x = index * PANEL_WIDTH - camera;
       if (x < -30 || x > W + 30) continue;
-      const dark = '#6a644e';
-      const light = '#b8a779';
+      const dark = index === 0 || index === 1 ? '#69402b' : index === 4 || index === 5 ? '#444b3a' : index === 18 || index === 19 ? '#264a42' : '#6a644e';
+      const light = index === 18 || index === 19 ? '#bce0c5' : '#b8a779';
       ctx.fillStyle = dark;
       ctx.fillRect(x - 9, 75, 18, 850);
       ctx.fillStyle = light;
@@ -77,6 +103,11 @@ export function createCompositor({ paper }) {
       text(ctx, String(index + 1).padStart(2, '0'), x + 22, 920, { size: 15, color: dark, family: SANS });
     }
     ctx.restore();
+    if (portrait.amount > 0) {
+      ctx.fillStyle = '#090d0f';
+      ctx.fillRect(0, 0, portrait.left, 1000);
+      ctx.fillRect(portrait.left + portrait.width, 0, W, 1000);
+    }
   }
 
   function drawIntro(ctx, t) {

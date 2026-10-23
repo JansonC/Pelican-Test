@@ -3,7 +3,7 @@ const definitions = [
   ['egypt', '埃及壁画', 'Egyptian Wall Painting', '约前 1300', '#e2d0a3', '#514632', '#967045'],
   ['han', '汉画像石拓片', 'Han Stone Rubbing', '约 100', '#303b38', '#efe9d5', '#c5b689'],
   ['tang', '唐代白描', 'Tang Line Drawing', '约 750', '#f0eadc', '#414b44', '#a57b5d'],
-  ['song', '宋代山水', 'Song Landscape', '约 1000', '#e1e3d5', '#41584d', '#83917d'],
+  ['song', '宋代山水', 'Song Landscape', '约 1000', '#ebe5d2', '#41584d', '#83917d'],
   ['qingming', '清明上河图', 'Qingming Riverside', '约 1100', '#e9dfc7', '#59604b', '#aa8060'],
   ['maya', '玛雅抄本', 'Maya Codex', '约 1200', '#decba6', '#584b3a', '#a05c44'],
   ['mughal', '莫卧儿细密画', 'Mughal Miniature', '约 1600', '#d7dfc6', '#455c4c', '#a58242'],
@@ -23,6 +23,6 @@ const definitions = [
 
 export const SCENES = Object.freeze(definitions.map(([id, zh, en, era, paper, ink, accent], index) => Object.freeze({
   id, zh, en, era, index, number: index + 1, paper, ink, accent,
-  start: 5 + index * 6, duration: 6, status: 'placeholder',
+  start: 5 + index * 6, duration: 6, status: ['sahara', 'song', 'vertical'].includes(id) ? 'study' : 'placeholder',
   updateHz: ['wayang', 'pixel', 'chat'].includes(id) ? 10 : null,
 })));

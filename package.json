@@ -18,7 +18,9 @@
     "sheet": "node tools/sheet.mjs",
     "render": "node tools/render.mjs",
     "encode": "node tools/encode.mjs",
-    "smoke": "node tools/smoke.mjs"
+    "smoke": "node tools/smoke.mjs",
+    "review:stage2": "node tools/stage2.mjs",
+    "demo:stage2": "node tools/stage2-demo.mjs"
   },
   "dependencies": {
     "@fontsource-variable/noto-serif-sc": "5.3.1",

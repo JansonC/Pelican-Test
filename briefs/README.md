@@ -5,3 +5,5 @@
 不将简报或任务分工放入 `AGENTS.md`。
 
 共同接口见 `docs/ARCHITECTURE.md`；项目计划见 `PLAN.md`。
+
+阶段 2：[撒哈拉岩画](01-sahara.md)、[宋代山水](05-song.md)、[竖屏短视频](19-vertical.md)。
