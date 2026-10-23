@@ -40,7 +40,7 @@ export async function withRenderer(callback, { url } = {}) {
   let browser;
   try {
     if (!url) {
-      server = await createServer({ root: ROOT, configFile: resolve(ROOT, 'vite.config.js'), server: { port: 0, strictPort: false, host: '127.0.0.1' }, logLevel: 'error' });
+      server = await createServer({ root: ROOT, configFile: resolve(ROOT, 'vite.config.js'), server: { port: 0, strictPort: false, host: '127.0.0.1', hmr: false }, logLevel: 'error' });
       await server.listen();
       url = server.resolvedUrls.local[0];
     }

@@ -18,14 +18,15 @@ export function renderAt(ctx, { t, localT, pose }) {
 }
 ```
 
-主合成器扩展画芯外的底材、画框与道路，处理 16:9 构图及镜头。17 幕占位继续使用默认道路和骑手。
+主合成器扩展画芯外的底材、画框与道路，处理 16:9 构图及镜头。尚未制作的幕继续使用默认道路和骑手。
 正式场景导出 `finished = true`，自行绘制地材与道路，并可实现以下接口：
 
 ```js
 export function prepare({ brush }) { /* 字体、笔触就绪后，缓存静态材料。 */ }
 export function cameraAt(localT) { return { zoom: 1, riderScale: 1 }; }
-export function renderRider(ctx, pose, { x, y, scale }) { /* 独立风格造型。 */ }
+export function renderRider(ctx, pose, { x, y, scale, t, localT }) { /* 独立风格造型。 */ }
 export function renderTitle(ctx, { x, t, localT }) { /* 不随局部推镜缩放。 */ }
+export function poseTimeAt(t, localT) { return t; } // 可选的角色时间映射
 ```
 
 画芯仍为 1000×1000，底材可延展至 `x=-500…1500`。合成器提供共享骨骼，
@@ -33,6 +34,11 @@ export function renderTitle(ctx, { x, t, localT }) { /* 不随局部推镜缩放
 这使宋画先显出巨峰与微小旅人，再推近找到骑手。比例变化从整车入框后开始，
 并在长喙到达出口前恢复共同尺度，避免画框两侧出现大小不一致的半辆自行车。
 局部镜头不会移动画框或相邻场景。双语标题在画框裁剪内保持输出尺寸。
+
+`poseTimeAt` 只映射传给共享骨骼的角色时间；埃及壁画的第二小节短暂停格后追上原时间，
+世界位移、画框、标题和镜头仍使用原始时间。邻幕使用各自的姿态映射，出口前须回到共同相位。
+`renderRider` 同时接收原始 `t`／`localT`，可用于飘带等非关节运动，不能从上次 `renderAt` 存取时间。
+场景可导出 `TITLE_GLYPHS`（或已有的 `UI_GLYPHS`）列出新增画内文字，入口在资源 ready 前统一加载。
 
 竖屏收窄在 `src/main/presentation.js` 中计算，稳定画幅为 562.5×1000（9:16），
 两侧绘制不透明黑边；进出时平滑改变可见宽度和跟随锚点。竖屏场景的
@@ -58,6 +64,8 @@ p5.brush 的 HB、charcoal 和 2B 笔触通过独立适配器渲染，读取为�
 动态颜料缓冲区每帧清空重画，避免帧间遗留状态。Outro 缩略图从已准备好的场景产生。
 导出程序等待字体和绘制模块准备完成，调用 `window.pelican.renderAt(t)`，
 只截取 1920×1080 画布区域。`tools/render.mjs` 的 manifest 保存帧率、时间范围和源码指纹。
+工具启动的临时 Vite 服务关闭热更新，避免资源就绪后被并行保存或依赖预构建重新导航。
+常规 `npm run dev` 仍保留热更新。批次 A 的视觉复查和合辑导出还会对比开始／结束源码指纹。
 
 ## 文件职责
 

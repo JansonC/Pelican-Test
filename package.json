@@ -20,7 +20,9 @@
     "encode": "node tools/encode.mjs",
     "smoke": "node tools/smoke.mjs",
     "review:stage2": "node tools/stage2.mjs",
-    "demo:stage2": "node tools/stage2-demo.mjs"
+    "demo:stage2": "node tools/stage2-demo.mjs",
+    "review:stage3-a": "node tools/stage3-a.mjs",
+    "demo:stage3-a": "node tools/stage3-a-demo.mjs"
   },
   "dependencies": {
     "@fontsource-variable/noto-serif-sc": "5.3.1",

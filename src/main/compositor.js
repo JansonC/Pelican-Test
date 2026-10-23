@@ -45,7 +45,8 @@ export function createCompositor({ paper }) {
       if (index >= 0 && index < 20) {
         const titleX = Math.min(left + PANEL_WIDTH - 760, Math.max(left + 125, 110));
         const characterT = scene.updateHz ? quantizeTime(t, scene.updateHz) : t;
-        const frame = { t, localT: t - scene.start, pose: poseAt(characterT) };
+        const poseT = renderer.poseTimeAt?.(characterT, characterT - scene.start) ?? characterT;
+        const frame = { t, localT: t - scene.start, pose: poseAt(poseT) };
         const localView = renderer.cameraAt?.(frame.localT) || { zoom: 1, riderScale: 1 };
         const view = { zoom: localView.zoom, riderScale: localView.riderScale * portrait.riderScale };
         const origin = left + (PANEL_WIDTH - 1000) / 2;
@@ -61,6 +62,7 @@ export function createCompositor({ paper }) {
         if (rider && renderer.renderRider) {
           renderer.renderRider(ctx, frame.pose, {
             x: localRiderX, y: ROAD_Y - 73 * view.riderScale, scale: view.riderScale,
+            t, localT: frame.localT,
           });
         }
         ctx.restore();

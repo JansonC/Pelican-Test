@@ -2,7 +2,7 @@
 
 一只鹈鹕沿连续道路骑车，穿过画框，在二十个时代与画风之间旅行。所有画面用代码绘制，音频采用程序合成。
 
-阶段 1 已验收，当前提供阶段 2 无声预览：撒哈拉岩画、宋代山水、竖屏短视频完成美术制作，其余 17 幕保留标名占位。完整时间轴仍为 137 秒；后续美术与音乐依 [PLAN.md](PLAN.md) 分阶段制作。
+当前提供阶段 3 批次 A 的无声预览：新增埃及壁画、汉画像石拓片、唐代白描、清明上河图，连同阶段 2 的三幕共完成七幕美术，其余 13 幕保留标名占位。完整时间轴仍为 137 秒；后续批次与音乐依 [PLAN.md](PLAN.md) 分阶段制作。
 
 ## 环境与启动
 
@@ -46,6 +46,31 @@ npm run demo:stage2
 `--frames frames/stage2-sahara-30,frames/stage2-song-30,frames/stage2-vertical-30`，
 以现有逐帧文件制表。此模式要求采样时刻位于实际帧网格上。
 
+阶段 3 批次 A 的四幕分别位于 11–17、17–23、23–29、35–41 秒。
+17 幕独立美术简报已准备，场景继续按批次验收。批次 A 的复查与短片命令：
+
+```powershell
+npm run review:stage3-a
+npm run demo:stage3-a
+```
+
+`review:stage3-a` 检查四幕各入场／高光／离场的乱序跳转确定性，输出 12 张全尺寸图、
+接触表、24 张事件图的总表、6 个边界的前中后三帧、播放器截图及绘制提交耗时。
+产物位于 `out/stage3-a/`。`?t=14`、`?t=20`、`?t=26`、`?t=38` 分别定位四幕高光。
+
+`demo:stage3-a` 以 30 fps 导出四段各 7 秒的无声 MP4，包含前后各半秒的相邻画框；
+合辑为 `out/stage3-a/batch-a.mp4`（28 秒），独立片段为 `egypt.mp4`、`han.mp4`、
+`tang.mp4`、`qingming.mp4`。命令自动检查分辨率、帧数、片长并完整解码，记录于
+`export-verification.json`，同时从实际导出帧生成 `contact-sheet.png`、四幕高光总览
+`highlights.png` 和 `boundaries.png`。支持 `--fps 60`、`--tag`、`--resume`、`--overwrite`，
+恢复时必须保持源码指纹一致；源码改变后用新的 tag 保留旧帧。
+
+本轮导出帧位于 `frames/stage3-a-delivery-*-30/`，恢复与重编码命令：
+
+```powershell
+npm run demo:stage3-a -- --tag stage3-a-delivery --resume --overwrite
+```
+
 ## 截图、接触表与视频
 
 ```powershell
@@ -74,7 +99,7 @@ npm run encode -- --frames frames/full-30 --out out/pelican-silent.mp4
 src/kit/       绘图、材质、固定随机数与 p5.brush 接入
 src/beat/      节拍、时长、场景定位与帧时间
 src/rig/       骨骼姿势、两段腿部求解与骨架绘制
-src/scenes/    每幕一个文件，3 幕正式美术与 17 幕标名占位
+src/scenes/    每幕一个文件，7 幕正式美术与 13 幕标名占位
 src/main/      播放器、合成、道路、镜头、Intro 与 Outro
 tools/         环境检查、截图、接触表、逐帧渲染、编码与浏览器验证
 test/          时间边界、分段帧序列与踩踏约束验证
