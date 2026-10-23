@@ -1,0 +1,33 @@
+{
+  "name": "pelican-test",
+  "version": "0.1.0",
+  "private": true,
+  "description": "《鹈鹕测试》：确定性绘制的艺术史骑行短片",
+  "type": "module",
+  "engines": { "node": ">=22.12.0" },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "prebuild": "node tools/notices.mjs",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "node --test",
+    "check": "node tools/check.mjs",
+    "doctor": "node tools/doctor.mjs",
+    "notices": "node tools/notices.mjs",
+    "shot": "node tools/shot.mjs",
+    "sheet": "node tools/sheet.mjs",
+    "render": "node tools/render.mjs",
+    "encode": "node tools/encode.mjs",
+    "smoke": "node tools/smoke.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/noto-serif-sc": "5.3.1",
+    "p5": "2.3.4",
+    "p5.brush": "2.2.3"
+  },
+  "devDependencies": {
+    "puppeteer-core": "25.16.0",
+    "sharp": "0.35.5",
+    "vite": "8.3.5"
+  }
+}

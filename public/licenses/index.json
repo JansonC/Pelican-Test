@@ -1,0 +1,261 @@
+[
+  {
+    "name": "@babel/runtime",
+    "version": "7.29.10",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/babel/babel.git",
+      "directory": "packages/babel-runtime"
+    },
+    "files": [
+      "licenses/@babel/runtime/LICENSE"
+    ]
+  },
+  {
+    "name": "@davepagurek/bezier-path",
+    "version": "0.0.7",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/davepagurek/bezier-path.git"
+    },
+    "note": "The upstream npm package and repository declare MIT but provide no standalone license text; the original package metadata is preserved.",
+    "files": [
+      "licenses/@davepagurek/bezier-path/package.json"
+    ]
+  },
+  {
+    "name": "@fontsource-variable/noto-serif-sc",
+    "version": "5.3.1",
+    "license": "OFL-1.1",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/fontsource/font-files.git",
+      "directory": "fonts/variable/noto-serif-sc"
+    },
+    "files": [
+      "licenses/@fontsource-variable/noto-serif-sc/LICENSE"
+    ]
+  },
+  {
+    "name": "@japont/unicode-range",
+    "version": "1.0.0",
+    "license": "MIT",
+    "repository": "git@github.com:Japont/unicode-range.git",
+    "files": [
+      "licenses/@japont/unicode-range/LICENSE"
+    ]
+  },
+  {
+    "name": "acorn",
+    "version": "8.19.0",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/acornjs/acorn.git"
+    },
+    "files": [
+      "licenses/acorn/LICENSE"
+    ]
+  },
+  {
+    "name": "acorn-walk",
+    "version": "8.3.5",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/acornjs/acorn.git"
+    },
+    "files": [
+      "licenses/acorn-walk/LICENSE"
+    ]
+  },
+  {
+    "name": "colorjs.io",
+    "version": "0.6.1",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/color-js/color.js.git"
+    },
+    "files": [
+      "licenses/colorjs.io/LICENSE"
+    ]
+  },
+  {
+    "name": "escodegen",
+    "version": "2.1.0",
+    "license": "BSD-2-Clause",
+    "repository": {
+      "type": "git",
+      "url": "http://github.com/estools/escodegen.git"
+    },
+    "files": [
+      "licenses/escodegen/LICENSE.BSD"
+    ]
+  },
+  {
+    "name": "esprima",
+    "version": "4.0.1",
+    "license": "BSD-2-Clause",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/jquery/esprima.git"
+    },
+    "files": [
+      "licenses/esprima/LICENSE.BSD"
+    ]
+  },
+  {
+    "name": "estraverse",
+    "version": "5.3.0",
+    "license": "BSD-2-Clause",
+    "repository": {
+      "type": "git",
+      "url": "http://github.com/estools/estraverse.git"
+    },
+    "files": [
+      "licenses/estraverse/LICENSE.BSD"
+    ]
+  },
+  {
+    "name": "esutils",
+    "version": "2.0.3",
+    "license": "BSD-2-Clause",
+    "repository": {
+      "type": "git",
+      "url": "http://github.com/estools/esutils.git"
+    },
+    "files": [
+      "licenses/esutils/LICENSE.BSD"
+    ]
+  },
+  {
+    "name": "gifenc",
+    "version": "1.0.3",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/mattdesl/gifenc.git"
+    },
+    "files": [
+      "licenses/gifenc/LICENSE.md"
+    ]
+  },
+  {
+    "name": "i18next",
+    "version": "19.9.2",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/i18next/i18next.git"
+    },
+    "files": [
+      "licenses/i18next/LICENSE"
+    ]
+  },
+  {
+    "name": "i18next-browser-languagedetector",
+    "version": "4.3.1",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/i18next/i18next-browser-languageDetector.git"
+    },
+    "files": [
+      "licenses/i18next-browser-languagedetector/LICENSE"
+    ]
+  },
+  {
+    "name": "libtess",
+    "version": "1.2.2",
+    "license": "SGI-B-2.0",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/brendankenny/libtess.js.git"
+    },
+    "files": [
+      "licenses/libtess/LICENSE"
+    ]
+  },
+  {
+    "name": "omggif",
+    "version": "1.0.10",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/deanm/omggif"
+    },
+    "files": [
+      "licenses/omggif/LICENSE-header.txt"
+    ]
+  },
+  {
+    "name": "p5",
+    "version": "2.3.4",
+    "license": "LGPL-2.1",
+    "repository": "processing/p5.js",
+    "files": [
+      "licenses/p5/license.txt"
+    ]
+  },
+  {
+    "name": "p5.brush",
+    "version": "2.2.3",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/acamposuribe/p5.brush.git"
+    },
+    "files": [
+      "licenses/p5.brush/LICENSE.md"
+    ]
+  },
+  {
+    "name": "pako",
+    "version": "2.2.0",
+    "license": "(MIT AND Zlib)",
+    "repository": "nodeca/pako",
+    "files": [
+      "licenses/pako/LICENSE",
+      "licenses/pako/ZLIB-header.txt"
+    ]
+  },
+  {
+    "name": "simplex-noise",
+    "version": "4.0.3",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/jwagner/simplex-noise.js.git"
+    },
+    "files": [
+      "licenses/simplex-noise/LICENSE"
+    ]
+  },
+  {
+    "name": "source-map",
+    "version": "0.6.1",
+    "license": "BSD-3-Clause",
+    "repository": {
+      "type": "git",
+      "url": "http://github.com/mozilla/source-map.git"
+    },
+    "files": [
+      "licenses/source-map/LICENSE"
+    ]
+  },
+  {
+    "name": "zod",
+    "version": "4.6.7",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/colinhacks/zod.git"
+    },
+    "files": [
+      "licenses/zod/LICENSE"
+    ]
+  }
+]

@@ -1,0 +1,46 @@
+# Third-party notices
+
+Project code is independently authored. No source snippets or media from
+[Tunai-0511/meme67-art-history](https://github.com/Tunai-0511/meme67-art-history)
+have been incorporated. Its README.md, README_SHARE.md, LICENSE,
+LICENSE-MEDIA.md and NOTICE.md were read as workflow references.
+
+## Browser runtime
+
+| Component | Version | License | Source |
+|---|---|---|---|
+| p5.js | 2.3.4 | LGPL-2.1 | https://github.com/processing/p5.js |
+| p5.brush | 2.2.3 | MIT; © 2023–2026 Alejandro Campos Uribe | https://github.com/acamposuribe/p5.brush |
+| Noto Serif SC, distributed by Fontsource | 5.3.1 package | SIL OFL-1.1; Google Inc. | https://github.com/fontsource/fontsource |
+
+Unmodified upstream license texts are included in `public/licenses/` and remain
+available with the browser build. Runtime dependency notices are copied from
+the installed packages; `package-lock.json` records their exact versions.
+The generated inventory is `public/licenses/index.json`. The bezier-path npm
+package declares MIT and identifies its author but has no standalone license
+file; its original package metadata is preserved. omggif and pako additionally
+retain their license headers extracted verbatim from upstream source files.
+
+## Development and export tools
+
+- Vite 8.3.5 — MIT; https://github.com/vitejs/vite
+- puppeteer-core 25.16.0 — Apache-2.0; https://github.com/puppeteer/puppeteer
+- sharp 0.35.5 — Apache-2.0; https://github.com/lovell/sharp
+- sharp's native libvips distribution has its own licenses, including LGPL-2.1;
+  retain the license and third-party notices distributed with its npm packages.
+- ffmpeg / ffprobe are external system tools, not included in this repository.
+  Their licensing depends on the installed build; the build used locally has
+  GPL components enabled.
+
+Tool dependencies retain their notices in npm package distributions. This file
+does not replace their individual license conditions.
+
+## Original work
+
+All scene graphics, the pelican/bicycle rig, interface, text layout and favicon
+are drawn by this project's original code. No external image, video, voice,
+music or sound-effect assets have been added. Historical artwork references
+are a creative direction; the current scene files are labeled placeholders.
+
+The project has not yet chosen a public license for its own code or finished
+film. Third-party components remain subject to the licenses above.

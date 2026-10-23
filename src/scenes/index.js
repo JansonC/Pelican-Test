@@ -1,0 +1,22 @@
+import * as s0 from './sahara.js';
+import * as s1 from './egypt.js';
+import * as s2 from './han.js';
+import * as s3 from './tang.js';
+import * as s4 from './song.js';
+import * as s5 from './qingming.js';
+import * as s6 from './maya.js';
+import * as s7 from './mughal.js';
+import * as s8 from './bada.js';
+import * as s9 from './wayang.js';
+import * as s10 from './ukiyo.js';
+import * as s11 from './starry.js';
+import * as s12 from './scream.js';
+import * as s13 from './nosferatu.js';
+import * as s14 from './scope.js';
+import * as s15 from './pixel.js';
+import * as s16 from './chat.js';
+import * as s17 from './vaporwave.js';
+import * as s18 from './vertical.js';
+import * as s19 from './code.js';
+
+export const sceneRenderers = [s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19];
