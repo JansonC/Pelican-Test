@@ -30,7 +30,9 @@ await withRenderer(async ({ page, shot }) => {
     const { sceneRenderers } = await import('/src/scenes/index.js');
     return sceneRenderers.filter((renderer) => renderer.finished).map((renderer) => renderer.scene.id);
   });
-  assert.equal(report.finished.length, 7, 'Stage 2 and batch A must provide seven finished scenes.');
+  for (const id of ['sahara', 'egypt', 'han', 'tang', 'song', 'qingming', 'vertical']) {
+    assert.ok(report.finished.includes(id), `${id} must retain its finished artwork`);
+  }
   for (const scene of scenes) assert.ok(report.finished.includes(scene.id), `${scene.id} must replace its placeholder`);
   const contact = [];
   for (const scene of scenes) {

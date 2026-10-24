@@ -2,7 +2,7 @@
 
 一只鹈鹕沿连续道路骑车，穿过画框，在二十个时代与画风之间旅行。所有画面用代码绘制，音频采用程序合成。
 
-当前提供阶段 3 批次 A 的无声预览：新增埃及壁画、汉画像石拓片、唐代白描、清明上河图，连同阶段 2 的三幕共完成七幕美术，其余 13 幕保留标名占位。完整时间轴仍为 137 秒；后续批次与音乐依 [PLAN.md](PLAN.md) 分阶段制作。
+当前提供阶段 3 批次 B 的无声预览：新增玛雅抄本、莫卧儿细密画、八大山人写意、爪哇皮影戏，连同前两轮共完成十一幕美术，其余 9 幕保留标名占位。完整时间轴仍为 137 秒；后续批次与音乐依 [PLAN.md](PLAN.md) 分阶段制作。
 
 ## 环境与启动
 
@@ -71,6 +71,30 @@ npm run demo:stage3-a
 npm run demo:stage3-a -- --tag stage3-a-delivery --resume --overwrite
 ```
 
+阶段 3 批次 B 的四幕连续位于 41–65 秒，每幕 6 秒，复查与短片命令：
+
+```powershell
+npm run review:stage3-b
+npm run demo:stage3-b
+```
+
+`review:stage3-b` 输出四幕各入场／高光／离场的 12 张 1080p 图、接触表、四幕高光、
+24 张节拍事件图和 5 个边界的前中后三帧，检查乱序跳转逐像素一致性。
+同时检查皮影的整个人物及操纵杆按 10 Hz 更新，而世界位移保持平滑。
+产物位于 `out/stage3-b/`；`?t=44`、`?t=50`、`?t=56`、`?t=62` 分别定位高光。
+
+`demo:stage3-b` 以 30 fps 导出四段各 7 秒的无声 MP4（前后各含半秒相邻画框）；
+28 秒合辑为 `out/stage3-b/batch-b.mp4`，独立片段为 `maya.mp4`、`mughal.mp4`、
+`bada.mp4`、`wayang.mp4`。命令检查帧数、片长、分辨率和完整解码，生成实际导出帧的
+接触表、高光及边界表；已有同版本视觉复查时，还会逐像素对比 12 张验收图。
+支持 `--fps 60`、`--tag`、`--resume`、`--overwrite`；恢复要求源码指纹一致。
+
+本轮使用的帧目录为 `frames/stage3-b-delivery-*-30/`，恢复与重编码命令：
+
+```powershell
+npm run demo:stage3-b -- --tag stage3-b-delivery --resume --overwrite
+```
+
 ## 截图、接触表与视频
 
 ```powershell
@@ -99,7 +123,7 @@ npm run encode -- --frames frames/full-30 --out out/pelican-silent.mp4
 src/kit/       绘图、材质、固定随机数与 p5.brush 接入
 src/beat/      节拍、时长、场景定位与帧时间
 src/rig/       骨骼姿势、两段腿部求解与骨架绘制
-src/scenes/    每幕一个文件，7 幕正式美术与 13 幕标名占位
+src/scenes/    每幕一个文件，11 幕正式美术与 9 幕标名占位
 src/main/      播放器、合成、道路、镜头、Intro 与 Outro
 tools/         环境检查、截图、接触表、逐帧渲染、编码与浏览器验证
 test/          时间边界、分段帧序列与踩踏约束验证

@@ -23,6 +23,6 @@ const definitions = [
 
 export const SCENES = Object.freeze(definitions.map(([id, zh, en, era, paper, ink, accent], index) => Object.freeze({
   id, zh, en, era, index, number: index + 1, paper, ink, accent,
-  start: 5 + index * 6, duration: 6, status: ['sahara', 'egypt', 'han', 'tang', 'song', 'qingming', 'vertical'].includes(id) ? 'study' : 'placeholder',
+  start: 5 + index * 6, duration: 6, status: ['sahara', 'egypt', 'han', 'tang', 'song', 'qingming', 'maya', 'mughal', 'bada', 'wayang', 'vertical'].includes(id) ? 'study' : 'placeholder',
   updateHz: ['wayang', 'pixel', 'chat'].includes(id) ? 10 : null,
 })));
