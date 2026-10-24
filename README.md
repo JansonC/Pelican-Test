@@ -2,7 +2,7 @@
 
 一只鹈鹕沿连续道路骑车，穿过画框，在二十个时代与画风之间旅行。所有画面用代码绘制，音频采用程序合成。
 
-当前提供阶段 4 有声预览：二十幕美术与原创程序合成配乐贯穿完整 137 秒，包含逐幕音色、提示音、蒸汽波变速与最后车铃。阶段要求见 [PLAN.md](PLAN.md)，乐谱与音频实现见 [audio/README.md](audio/README.md)。
+完整成片为 137 秒、1920×1080、30 fps，二十幕原创画面与程序合成配乐贯穿全片，包含逐幕音色、提示音、蒸汽波变速与最后车铃。阶段要求见 [PLAN.md](PLAN.md)，乐谱与音频实现见 [audio/README.md](audio/README.md)。
 
 ## 环境与启动
 
@@ -137,6 +137,50 @@ npm run demo:stage4
 例如：`npm run demo:stage4 -- --tag stage4-music --resume --overwrite`。
 已有完整 MP4 时，`npm run demo:stage4 -- --verify-only` 只检查视频与音轨并刷新同步接触表。
 阶段 4 完成后等待旋律、音色、动态和同步反馈，再进入整体打磨。
+
+## 最终成片 · 第五阶段
+
+```powershell
+npm run review:final
+npm run demo:final
+npm run preview
+```
+
+`review:final` 检查二十幕各入场／高光／离场、所有 21 个边界、Intro 与完整空席位结尾，
+验证乱序跳转逐像素一致性、中英文题签与年代的安全边距、桌面／手机／全屏布局及片尾停止。
+同时逐幕比较直接画布导出与实际浏览器截图，要求像素完全相同。
+接触表、1080p 原图、界面截图和验证记录位于 `out/final/review/`。
+
+同一浏览器实例内的重复绘制与截图须逐像素完全相同。跨实例复验会单独记录少量色阶舍入差异：
+单通道差值最多 8／255、归一化平均误差最多 0.00005、差异像素最多 2%；超出任何一项即失败。
+`frame-verification.json` 保存两份图像的像素哈希及实际误差，避免将色阶差异与构图或运动变化混淆。
+
+`demo:final` 从源码执行测试、语法检查与生产构建；缺少同版本音轨或验收记录时自动生成。
+随后完整渲染 4,110 帧、合成 H.264/AAC MP4，检查完整解码、画面与关键音频瞬态，
+并用生产构建实际播放至片尾。固定的最终规格为 1080p、30 fps、48 kHz 立体声，音视频均为 137 秒。
+
+- `out/final/pelican-test.mp4`：最终成片。
+- `out/final/browser/`：可通过 HTTP 服务打开的生产浏览器版本，包含本地字体、音色 Worker 和许可文本。
+- `out/final/browser-preview.png`、`sync-sheet.png`：实际生产播放器与同步接触表。
+- `out/final/delivery.json`、`export-verification.json`：源码指纹、成片 SHA-256、完整解码与音画对齐记录。
+- `frames/final-30/`：完整逐帧 PNG 与可恢复的 manifest。
+
+`npm run preview` 在 <http://127.0.0.1:4173> 预览 `dist/` 中相同的生产构建；
+也可用 `npm run preview -- --outDir out/final/browser` 打开交付的浏览器目录。
+浏览器版本需要本地 HTTP 服务，不能直接双击 `index.html`。
+
+源码已在本项目的 `src/`、`audio/`、`tools/` 等目录交付；安装和完整重建命令为：
+
+```powershell
+npm ci
+npm run doctor
+npm run demo:final
+```
+
+中断后运行 `npm run demo:final -- --resume --overwrite`；已有最终 MP4 时运行
+`npm run demo:final -- --verify-only` 仅复验成片和生产播放器。
+源码改变后用新的帧目录，例如 `--tag final-v2`；不要混用不同指纹的画面与音乐。
+支持 `--fps 60` 生成可选的 8,220 帧版本；正式交付采用 30 fps。
 
 ## 截图、接触表与视频
 

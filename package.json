@@ -32,7 +32,9 @@
     "audio:samples": "node tools/audio.mjs --samples",
     "audio:render": "node tools/audio.mjs",
     "review:audio": "node tools/audio-review.mjs",
-    "demo:stage4": "node tools/stage4-demo.mjs"
+    "demo:stage4": "node tools/stage4-demo.mjs",
+    "review:final": "node tools/final-review.mjs",
+    "demo:final": "node tools/final-demo.mjs"
   },
   "dependencies": {
     "@fontsource-variable/noto-serif-sc": "5.3.1",

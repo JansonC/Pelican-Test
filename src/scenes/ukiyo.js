@@ -278,9 +278,9 @@ export function renderTitle(ctx, { x: titleX }) {
   text(ctx, '浮', titleX + 27, 144, { size: 39, color: BLACK, weight: 600 });
   text(ctx, '世', titleX + 27, 190, { size: 39, color: BLACK, weight: 600 });
   text(ctx, '绘', titleX + 27, 236, { size: 39, color: BLACK, weight: 600 });
-  text(ctx, 'UKIYO-E', titleX + 99, 124, { size: 13, color: BLUE, family: SANS, align: 'center' });
-  text(ctx, '1830s', titleX + 95, 281, { size: 21, color: RED, family: SANS, align: 'center' });
-  text(ctx, '海 岸 驿 道', titleX + 66, 335, { size: 18, color: GREEN, align: 'center' });
+  text(ctx, 'UKIYO-E', titleX + 76, 276, { size: 17, color: BLUE, family: SANS, align: 'center' });
+  text(ctx, '1830s', titleX + 76, 310, { size: 21, color: RED, family: SANS, align: 'center' });
+  text(ctx, '海 岸 驿 道', titleX + 66, 347, { size: 18, color: GREEN, align: 'center' });
   ctx.fillStyle = RED;
   ctx.fillRect(titleX + 76, 367, 31, 40);
   text(ctx, '旅', titleX + 91, 396, { size: 25, color: PAPER, align: 'center' });

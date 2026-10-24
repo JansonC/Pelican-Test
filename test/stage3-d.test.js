@@ -5,6 +5,7 @@ import { jumpAt, coinAt, oneUpAt, animationFrameAt as pixelFrame } from '../src/
 import { windowJitterAt, messageAt, animationFrameAt as chatFrame } from '../src/scenes/chat.js';
 import { tapeRateAt, skipAt } from '../src/scenes/vaporwave.js';
 import { pathProgressAt, svgPathAt, codeLinesAt } from '../src/scenes/code.js';
+import { poseAt } from '../src/rig/pelican.js';
 
 test('Scope reconstructs the wrong-dial Lissajous event from local time', () => {
   assert.equal(scopeDialAt(1.999).wrong, 0);
@@ -48,4 +49,18 @@ test('Code scene reveals the same path data in editor and preview', () => {
   assert.ok(pathProgressAt(3) > 0 && pathProgressAt(5) === 1);
   assert.ok(svgPathAt(3).length >= 2);
   assert.ok(codeLinesAt(3).length >= 4);
+  for (const localT of [2.3, 3, 4.2, 5.5]) {
+    const source = codeLinesAt(localT).join('\n');
+    const serialized = [...source.matchAll(/<path stroke="([^"]+)" d="([^"]+)"/g)];
+    const paths = svgPathAt(localT);
+    assert.equal(serialized.length, paths.length);
+    paths.forEach((path, index) => {
+      assert.equal(serialized[index][1], path.color);
+      assert.equal(serialized[index][2].trim().replace(/\s+/g, ' '), path.d);
+    });
+    assert.deepEqual(paths, svgPathAt(localT, poseAt(119 + localT)));
+    assert.ok(codeLinesAt(localT).length <= 19, 'all displayed SVG must fit inside the code pane');
+  }
+  const wheel = svgPathAt(5).find((path) => path.key === 'wheel');
+  assert.ok(wheel.d.startsWith('M -208 0 A 73 73 0 1 0 -62 0'));
 });

@@ -6,7 +6,7 @@ import { scopeOutlineAt } from '../scenes/scope.js';
 import { text, line, SANS, withAlpha } from '../kit/canvas.js';
 import { smooth, lerp } from '../kit/math.js';
 import { locate, STAGE_WIDTH as W, PANEL_WIDTH, TRAVEL_SPEED, ROAD_Y, quantizeTime } from '../beat/timeline.js';
-import { portraitAt } from './presentation.js';
+import { portraitAt, codeCameraAt, GALLERY, outroCameraAt, outroCaptionAt } from './presentation.js';
 import { CUES } from '../beat/events.js';
 
 const PAPER = '#eee8da';
@@ -22,7 +22,7 @@ export function createCompositor({ paper }) {
 
   function drawWorld(ctx, t, { rider = true } = {}) {
     const portrait = portraitAt(t);
-    const riderX = portrait.riderX;
+    const riderX = portrait.riderX + codeCameraAt(t).riderOffset;
     const travel = (t - 5) * TRAVEL_SPEED;
     const camera = travel - riderX;
     const distance = Math.abs((t - 5 + 3) % 6 - 3);
@@ -87,7 +87,9 @@ export function createCompositor({ paper }) {
       }
       if (rider && (!renderer.finished || index < 0 || index > 19)) {
         const characterT = scene.updateHz ? quantizeTime(t, scene.updateHz) : t;
-        drawPelican(ctx, poseAt(characterT), { x: riderX, y: ROAD_Y - 73 * portrait.riderScale, scale: portrait.riderScale, ink: scene.ink, accent: scene.accent });
+        const placement = { x: riderX, y: ROAD_Y - 73 * portrait.riderScale, scale: portrait.riderScale, t, localT: t - scene.start };
+        if (index > 19) renderer.renderRider(ctx, poseAt(characterT), placement);
+        else drawPelican(ctx, poseAt(characterT), { ...placement, ink: scene.ink, accent: scene.accent });
       }
       ctx.restore();
     }
@@ -219,7 +221,7 @@ export function createCompositor({ paper }) {
       canvas.height = 270;
       const ctx = canvas.getContext('2d');
       ctx.scale(canvas.width / W, canvas.height / 1000);
-      drawWorld(ctx, scene.start + 3);
+      drawWorld(ctx, scene.highlight);
       thumbnails.push(canvas);
     });
   }
@@ -229,23 +231,12 @@ export function createCompositor({ paper }) {
     ctx.fillStyle = PAPER;
     ctx.fillRect(0, 0, W, 1000);
     grain(ctx);
-    const cellW = 216;
-    const cellH = 206;
-    const gap = 15;
-    const left = (W - (cellW * 7 + gap * 6)) / 2;
-    const top = 145;
-    const focus = { x: left + 6 * (cellW + gap) + cellW / 2, y: top + 2 * (cellH + gap) + 75 };
-    const finalZoom = 7.2;
-    const push = smooth((localT - 3) / 4);
-    // Pull out from the final displayed scene before approaching the empty chair.
-    const pull = 1 - smooth(localT / 1.25);
-    const last = { x: left + 5 * (cellW + gap) + cellW / 2, y: focus.y };
-    const scale = 1 + (finalZoom - 1) * (push + pull);
-    const focusX = push ? focus.x : last.x;
-    const offset = push || pull;
+    const { cellWidth: cellW, cellHeight: cellH, gap, top } = GALLERY;
+    const camera = outroCameraAt(localT);
+    const { left } = camera;
     ctx.save();
-    ctx.translate(lerp(0, W / 2 - focusX * scale, offset), lerp(0, 445 - focus.y * scale, offset));
-    ctx.scale(scale, scale);
+    ctx.translate(camera.x, camera.y);
+    ctx.scale(camera.scale, camera.scale);
     text(ctx, '二十份答卷，一个空席位。', left, 91, { size: 28, weight: 600 });
     text(ctx, 'THE PELICAN TEST   /   COLLECTED STUDIES', W - left, 91, { size: 12, align: 'right', color: '#847d69', family: SANS });
     for (let index = 0; index < 21; index += 1) {
@@ -270,12 +261,12 @@ export function createCompositor({ paper }) {
       text(ctx, index < 20 ? SCENES[index].era : '尚未发表评论', x + 11, y + 179, { size: 11, color: '#8b8068' });
     }
     ctx.restore();
-    const caption = localT < 6 ? '截至目前，人类共提交了 20 份答卷。' : '鹈鹕本人对此尚未发表评论。';
-    const captionAlpha = localT < 6 ? smooth((localT - 1) / 0.4) * (1 - smooth((localT - 5.3) / 0.5)) : smooth((localT - 7) / 0.4);
-    withAlpha(ctx, captionAlpha, () => {
+    if (localT < 0.55) withAlpha(ctx, 1 - smooth(localT / 0.55), () => drawWorld(ctx, 125 - 1e-6));
+    const caption = outroCaptionAt(localT);
+    withAlpha(ctx, caption.alpha, () => {
       ctx.fillStyle = PAPER;
       ctx.fillRect(0, 875, W, 125);
-      text(ctx, caption, W / 2, 947, { size: 34, align: 'center', weight: 600 });
+      text(ctx, caption.text, W / 2, 947, { size: 34, align: 'center', weight: 600 });
     });
   }
 

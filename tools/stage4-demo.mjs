@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { readFile, writeFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
 import sharp from 'sharp';
 import { options, ensureParent, run } from './lib/runtime.mjs';
 import { fingerprint } from './lib/fingerprint.mjs';
@@ -10,7 +10,7 @@ import { CUES } from '../src/beat/events.js';
 import { DURATION } from '../src/beat/timeline.js';
 import { createScore } from '../audio/score.js';
 
-const args = options({ fps: { type: 'string', default: '30' }, tag: { type: 'string', default: 'stage4-music' }, resume: { type: 'boolean', default: false }, overwrite: { type: 'boolean', default: false }, 'verify-only': { type: 'boolean', default: false } });
+const args = options({ fps: { type: 'string', default: '30' }, tag: { type: 'string', default: 'stage4-music' }, out: { type: 'string', default: 'out/stage4/pelican-with-music.mp4' }, resume: { type: 'boolean', default: false }, overwrite: { type: 'boolean', default: false }, 'verify-only': { type: 'boolean', default: false } });
 if (!/^[a-z0-9-]+$/.test(args.tag)) throw new RangeError('Invalid frame tag');
 const fps = Number(args.fps);
 if (![30, 60].includes(fps)) throw new RangeError('fps must be 30 or 60');
@@ -19,9 +19,9 @@ const audio = JSON.parse(await readFile('out/audio/render-verification.json', 'u
 const review = JSON.parse(await readFile('out/audio/verification.json', 'utf8'));
 assert.equal(audio.fingerprint, source, 'Run audio:render for the current source');
 assert.equal(review.fingerprint, source, 'Run review:audio for the current source');
-const directory = 'out/stage4';
+const directory = dirname(args.out);
 const frames = `frames/${args.tag}-${fps}`;
-const output = `${directory}/pelican-with-music.mp4`;
+const output = args.out;
 await ensureParent(output);
 if (!args['verify-only']) {
   await run(process.execPath, ['tools/render.mjs', '--fps', String(fps), '--out', frames, ...(args.resume ? ['--resume'] : [])]);

@@ -21,8 +21,11 @@ const definitions = [
   ['code', '代码美学', 'Code Aesthetics', '2020s · 大模型时代', '#283c3d', '#e6e6d4', '#92bcaa'],
 ];
 
+const highlights = { song: 3.15, scream: 2.8, pixel: 3.2, chat: 2.3, vaporwave: 3.125, vertical: 3.2, code: 4.3 };
+
 export const SCENES = Object.freeze(definitions.map(([id, zh, en, era, paper, ink, accent], index) => Object.freeze({
   id, zh, en, era, index, number: index + 1, paper, ink, accent,
+  highlight: 5 + index * 6 + (highlights[id] ?? 3),
   start: 5 + index * 6, duration: 6, status: ['sahara', 'egypt', 'han', 'tang', 'song', 'qingming', 'maya', 'mughal', 'bada', 'wayang', 'ukiyo', 'starry', 'scream', 'nosferatu', 'scope', 'pixel', 'chat', 'vaporwave', 'vertical', 'code'].includes(id) ? 'study' : 'placeholder',
   updateHz: ['wayang', 'pixel', 'chat'].includes(id) ? 10 : null,
 })));

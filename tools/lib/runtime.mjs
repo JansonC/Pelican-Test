@@ -61,8 +61,11 @@ export async function withRenderer(callback, { url } = {}) {
     const startupError = await page.evaluate(() => window.pelicanError);
     if (startupError) throw new Error(`Preview initialization: ${startupError}`);
     const shot = async (time) => {
-      await page.evaluate((t) => window.pelican.renderAt(t), time);
-      return page.screenshot({ type: 'png', optimizeForSpeed: true, clip: { x: 0, y: 0, width: 1920, height: 1080 }, captureBeyondViewport: false });
+      const encoded = await page.evaluate((requestedTime) => {
+        window.pelican.renderAt(requestedTime);
+        return document.querySelector('#screen canvas').toDataURL('image/png').split(',')[1];
+      }, time);
+      return Buffer.from(encoded, 'base64');
     };
     const result = await callback({ page, shot, errors, browser, url });
     if (errors.length) throw new Error(`Browser errors: ${errors.join('\n')}`);
