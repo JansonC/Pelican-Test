@@ -1,6 +1,8 @@
 import { SCENES } from '../scenes/catalog.js';
 import { sceneRenderers } from '../scenes/index.js';
 import { poseAt, drawPelican } from '../rig/pelican.js';
+import { shadowOutlineAt } from '../scenes/nosferatu.js';
+import { scopeOutlineAt } from '../scenes/scope.js';
 import { text, line, SANS, withAlpha } from '../kit/canvas.js';
 import { smooth, lerp } from '../kit/math.js';
 import { locate, STAGE_WIDTH as W, PANEL_WIDTH, TRAVEL_SPEED, ROAD_Y, quantizeTime } from '../beat/timeline.js';
@@ -87,6 +89,40 @@ export function createCompositor({ paper }) {
         drawPelican(ctx, poseAt(characterT), { x: riderX, y: ROAD_Y - 73 * portrait.riderScale, scale: portrait.riderScale, ink: scene.ink, accent: scene.accent });
       }
       ctx.restore();
+    }
+
+    // The last Nosferatu shadow is wired into the first green vector trace.
+    // Both outlines are reconstructed from the requested time so seeking cannot
+    // leave a stale glow or alter the 14→15 handoff.
+    if (rider && t >= 88.72 && t <= 89.32) {
+      const envelope = smooth((t - 88.72) / 0.18) * (1 - smooth((t - 89.16) / 0.16));
+      if (envelope > 0) {
+        const sourceLeft = 13 * PANEL_WIDTH - camera;
+        const sourceOrigin = sourceLeft + (PANEL_WIDTH - 1000) / 2;
+        const targetLeft = 14 * PANEL_WIDTH - camera;
+        const targetOrigin = targetLeft + (PANEL_WIDTH - 1000) / 2;
+        const pose = poseAt(t);
+        const source = shadowOutlineAt(t - 83, pose).map(([x, y]) => [sourceOrigin + x, y]);
+        const targetData = scopeOutlineAt(Math.max(0, t - 89), pose);
+        const targetBaseX = targetOrigin + (riderX - targetOrigin);
+        const targetBaseY = ROAD_Y - 73 * portrait.riderScale;
+        const target = targetData.points.map(([x, y]) => [targetBaseX + x, targetBaseY + y * portrait.riderScale]);
+        const morph = smooth((t - 88.92) / 0.2);
+        ctx.save();
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.globalAlpha = envelope * 0.85;
+        line(ctx, source, 'rgba(142,219,142,0.32)', 13);
+        line(ctx, source, '#b7ffb7', 3.1);
+        if (morph > 0) {
+          ctx.globalAlpha = envelope * morph * 0.72;
+          line(ctx, target, 'rgba(142,219,142,0.28)', 11);
+          line(ctx, target, '#b7ffb7', 2.6);
+          const bridge = [source[source.length - 1], target[0]];
+          line(ctx, bridge, '#b7ffb7', 2.8);
+        }
+        ctx.restore();
+      }
     }
 
     if (t >= 113 && t <= 119.13) sceneRenderers[18].renderOverlay(ctx, { t });

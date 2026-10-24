@@ -2,7 +2,7 @@
 
 2026-10-23，用户授权按 PLAN.md 初始化工程。
 
-第一、二阶段及第三阶段批次 A、B 已进入历史记录。2026-10-24 用户授权按 PLAN.md 使用子代理制作第三阶段批次 C：浮世绘、星月夜、呐喊、诺斯费拉图。完整 137 秒时间轴保留，当前无声；本轮完成 C 批后停止。
+第一、二阶段及第三阶段批次 A、B、C 已进入历史记录。2026-10-24 用户授权按 PLAN.md 使用子代理制作第三阶段批次 D：示波器、像素游戏、聊天窗口、蒸汽波、代码美学。完整 137 秒时间轴保留，当前无声。
 
 ## 第一阶段 · 已建立
 
@@ -159,7 +159,7 @@
 - `out/stage3-b/verification.json`、`export-verification.json`、`frame-verification.json`：图像哈希、皮影更新检查、渲染耗时、视频参数和实际导出帧逐像素比对。
 - `frames/stage3-b-delivery-*-30/manifest.json`：四段导出帧均为 complete，使用同一源码指纹 `dfc6195c24dec8571d09a5e8ca538652c4e605f5829e9fa727cae1cc104b6137`。
 
-批次 B 已完成；批次 C 见下节，批次 D 与音乐按计划等待用户反馈。
+批次 B 已完成；批次 C 见下节，批次 D 已完成，音乐按计划等待用户反馈。
 
 ## 阶段 3 · 批次 C
 
@@ -188,4 +188,25 @@
 - `out/stage3-c/contact-sheet.png`、`highlights.png`、`events.png`、`boundaries.png`、`preview.png` 及三份验证 JSON 已生成；实际导出帧与 12 张验收图逐像素比对通过。
 - 本轮导出帧目录为 `frames/stage3-c-delivery-*-30/`，源码指纹为 `0bc70c4d80b08ce74d3ef406bda2f3fcc8ebe0a80916c20e491eceda6ec47986`。
 
-批次 C 已完成并在此停止；批次 D 与音乐按计划等待用户反馈。
+批次 C 已完成；本轮批次 D 完成后按计划在此停止，音乐等待用户反馈。
+
+## 阶段 3 · 批次 D
+
+- 按用户本轮授权，最多三名子代理并行制作示波器、像素游戏和聊天窗口；完成后排队制作蒸汽波与代码美学。子代理只修改获分配的场景文件，主代理负责入口、跨幕转场、验收、导出与文档集成。
+- 批次入口为 `npm run review:stage3-d` 和 `npm run demo:stage3-d`，产物位于 `out/stage3-d/`；完整时间轴现有二十幕正式美术，继续保持无声。
+
+### 五幕完成内容
+
+- 示波器：原创圆形磷光绿屏仪器、外壳旋钮刻度与螺丝、固定种子扫描噪声和有限余辉；`scopeDialAt` 在第二小节错拧旋钮并短暂切换李萨如曲线，`scopeOutlineAt` 与第 14 幕影子轮廓用于通电转场。
+- 8-bit 像素游戏：十二色整数栅格关卡、块状远山与桥板浅坑、金币和 `1UP!`；`animationFrameAt` 按绝对时间 10 Hz 重建，`jumpAt`、`coinAt`、`oneUpAt` 分离事件与世界运动。
+- 早期聊天窗口：原创「栖线」桌面与联系人、层叠窗口和低帧骑行 GIF；`windowJitterAt`、`messageAt`、`animationFrameAt` 由时间重建，第二小节新消息抖窗，外部道路保持连续。
+- 蒸汽波：粉紫青日落网格海岸、双棕榈与抽象胸像，青粉双线骑手；`tapeRateAt` 使用精确 `2 ** (-4 / 12)` 变速比，`skipAt` 以半拍循环重建跳针并在第三小节恢复稳态。
+- 代码美学：深色编辑器左栏显示由 `PATHS` 生成的 SVG 源码，右栏使用同一组路径数据展开骑手；`pathProgressAt`、`svgPathAt`、`codeLinesAt` 共享真实路径，按轮、车架、腿、羽毛顺序展开。
+
+### 批次 D 验证
+
+- `npm test`、`npm run check`、`npm run build`、`npm run smoke` 与 `git diff --check` 均通过；新增批次 D 事件测试覆盖五幕时间接口、10 Hz 量化、路径同源和变速跳针。
+- `npm run review:stage3-d` 检查五幕 15 张入场／高光／离场图、6 个边界的 18 张前中后帧、30 张节拍事件图和 14→15 通电轮廓；每幕乱序跳转逐像素一致。
+- `npm run demo:stage3-d -- --tag stage3-d-final --overwrite` 导出五段各 7 秒和 35 秒合辑；全部为 H.264、1920×1080、30 fps、无音轨，完整解码并逐像素比对验收帧。
+
+批次 D 交付物位于 `out/stage3-d/`：`batch-d.mp4`、五段独立 MP4、`contact-sheet.png`、`highlights.png`、`events.png`、`boundaries.png`、`preview.png`、三份验证 JSON。源码改变后使用新的 `--tag`；同版本可用 `--resume --overwrite` 恢复导出。
