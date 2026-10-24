@@ -12,7 +12,7 @@ async function scripts(directory) {
   return groups.flat();
 }
 
-const files = (await Promise.all(['src', 'tools', 'test'].map((dir) => scripts(resolve(ROOT, dir))))).flat();
+const files = (await Promise.all(['src', 'audio', 'tools', 'test'].map((dir) => scripts(resolve(ROOT, dir))))).flat();
 let failed = false;
 for (const file of files) {
   const result = spawnSync(process.execPath, ['--check', file], { encoding: 'utf8', windowsHide: true });

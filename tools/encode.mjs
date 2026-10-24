@@ -13,6 +13,6 @@ await ensureParent(args.out);
 const ffmpegArgs = [args.overwrite ? '-y' : '-n', '-hide_banner', '-loglevel', 'warning', '-framerate', String(manifest.fps), '-start_number', String(manifest.firstFrame), '-i', resolve(directory, '%06d.png')];
 if (args.audio) ffmpegArgs.push('-ss', String(manifest.firstFrame / manifest.fps), '-i', resolve(args.audio), '-c:a', 'aac', '-b:a', '192k');
 else ffmpegArgs.push('-an');
-ffmpegArgs.push('-frames:v', String(manifest.frameCount), '-t', String(manifest.frameCount / manifest.fps), '-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', resolve(args.out));
+ffmpegArgs.push('-t', String(manifest.frameCount / manifest.fps), '-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', resolve(args.out));
 await run(process.env.FFMPEG_PATH || 'ffmpeg', ffmpegArgs);
 console.log(`${manifest.frameCount} frames / ${manifest.fps} fps → ${args.out}`);

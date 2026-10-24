@@ -9,7 +9,7 @@ async function filesIn(directory) {
 }
 
 export async function fingerprint() {
-  const paths = [...await filesIn(resolve(ROOT, 'src')), ...await filesIn(resolve(ROOT, 'public')), resolve(ROOT, 'package-lock.json'), resolve(ROOT, 'vite.config.js')].sort();
+  const paths = [...await filesIn(resolve(ROOT, 'src')), ...(await filesIn(resolve(ROOT, 'audio'))).filter((path) => path.endsWith('.js')), ...await filesIn(resolve(ROOT, 'public')), resolve(ROOT, 'package-lock.json'), resolve(ROOT, 'vite.config.js')].sort();
   const hash = createHash('sha256');
   for (const path of paths) { hash.update(relative(ROOT, path)); hash.update(await readFile(path)); }
   return hash.digest('hex');

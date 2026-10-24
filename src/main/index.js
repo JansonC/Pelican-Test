@@ -6,6 +6,7 @@ import { sceneRenderers } from '../scenes/index.js';
 import { paperTexture } from '../kit/canvas.js';
 import { prepareBrush } from '../kit/brush.js';
 import { createCompositor } from './compositor.js';
+import { createAudioTransport } from '../../audio/engine.js';
 
 const query = new URLSearchParams(location.search);
 const exportMode = query.get('export') === '1';
@@ -15,7 +16,7 @@ document.querySelector('#app').innerHTML = `
   <div class="shell">
     <header class="masthead">
       <div class="identity"><div class="monogram" aria-hidden="true">鹈</div><div><h1>鹈鹕测试</h1><div class="subtitle">The Pelican Test · An improbable art history</div></div></div>
-      <div class="reel-meta"><strong>批次 D · 二十幕已完成</strong><br />20 个时代 · 02:17 · 无声</div>
+      <div class="reel-meta"><strong>阶段 4 · 原创配乐</strong><br />20 个时代 · 02:17 · 有声</div>
     </header>
     <section class="screen-wrap" aria-label="动画预览">
       <div id="screen"></div><div class="loading" role="status">正在展开这段尚待考证的艺术史……</div>
@@ -24,18 +25,19 @@ document.querySelector('#app').innerHTML = `
         <div class="timecode"><span id="time">0:00</span> / 2:17</div>
         <input id="seek" type="range" min="0" max="137" step="0.001" value="0" aria-label="播放进度" />
         <div class="now-playing"><span id="number">序</span><strong id="name">一本正经地胡说</strong></div>
+        <button class="icon-button" id="mute" aria-label="静音" aria-pressed="false" title="静音 / 开声（M）">♫</button>
         <button class="icon-button" id="fullscreen" aria-label="全屏预览" title="全屏">⛶</button>
       </div>
     </section>
     <div class="chapters-head"><span>沿路的二十个时代</span><span>点击跳转 · ← → 前后半秒</span></div>
     <nav class="chapters" aria-label="版块跳转">${SCENES.map((scene) => `<button class="chapter" style="--color:${scene.paper}" data-scene="${scene.index}" aria-label="跳到${scene.zh}" title="${scene.zh} · ${scene.era}">${String(scene.number).padStart(2, '0')}</button>`).join('')}</nav>
-    <footer class="footer"><p>一条路，二十份答卷。鹈鹕本人尚未发表评论。</p><select id="scene-select" aria-label="选择版块"><option value="0">序 · 一本正经地胡说</option>${SCENES.map((scene) => `<option value="${scene.start}">${String(scene.number).padStart(2, '0')} · ${scene.zh}</option>`).join('')}<option value="125">终 · 新闻发布会</option></select></footer>
+    <footer class="footer"><p>一条路，二十份答卷。鹈鹕本人尚未发表评论。<span id="audio-status" role="status">点击播放，音乐随旅程开始。</span></p><select id="scene-select" aria-label="选择版块"><option value="0">序 · 一本正经地胡说</option>${SCENES.map((scene) => `<option value="${scene.start}">${String(scene.number).padStart(2, '0')} · ${scene.zh}</option>`).join('')}<option value="125">终 · 新闻发布会</option></select></footer>
   </div>`;
 
 let currentTime = normalizeTime(Number(query.get('t') || 0));
 let playing = false;
-let anchorTime = currentTime;
-let anchorWall = 0;
+const audio = createAudioTransport();
+audio.seek(currentTime);
 let animationFrame;
 let renderer;
 let compositor;
@@ -70,32 +72,52 @@ function renderAt(time) {
 }
 
 function pause() {
+  const time = audio.pause();
+  if (playing) renderAt(time);
   playing = false;
   cancelAnimationFrame(animationFrame);
   updateControls();
 }
 
-function tick(wall) {
+function tick() {
   if (!playing) return;
-  renderAt(Math.min(DURATION, anchorTime + (wall - anchorWall) / 1000));
+  renderAt(audio.time());
   if (currentTime >= DURATION) pause();
   else animationFrame = requestAnimationFrame(tick);
 }
 
-function play() {
+async function play() {
   if (playing) return;
   if (currentTime >= DURATION) renderAt(0);
   playing = true;
-  anchorTime = currentTime;
-  anchorWall = performance.now();
   updateControls();
-  animationFrame = requestAnimationFrame(tick);
+  document.querySelector('#audio-status').textContent = audio.getState().ready ? '原创配乐 · 120 BPM' : '正在准备音色，旅程即将开始……';
+  try {
+    if (await audio.play(currentTime)) {
+      document.querySelector('#audio-status').textContent = '原创配乐 · 120 BPM';
+      animationFrame = requestAnimationFrame(tick);
+    } else {
+      document.querySelector('#audio-status').textContent = '已暂停，点击播放继续旅程。';
+    }
+  } catch (error) {
+    playing = false;
+    audio.pause();
+    updateControls();
+    document.querySelector('#audio-status').textContent = `音乐未能启动：${error.message}`;
+    console.error(error);
+  }
 }
 
 function seek(time) {
   renderAt(time);
-  anchorTime = currentTime;
-  anchorWall = performance.now();
+  audio.seek(currentTime);
+}
+
+function toggleMute() {
+  const muted = audio.setMuted(!audio.getState().muted);
+  document.querySelector('#mute').setAttribute('aria-pressed', String(muted));
+  document.querySelector('#mute').setAttribute('aria-label', muted ? '开启声音' : '静音');
+  document.querySelector('#mute').textContent = muted ? '♪̸' : '♫';
 }
 
 async function start() {
@@ -132,6 +154,7 @@ async function start() {
   renderAt(currentTime);
   document.querySelector('.loading').remove();
   document.querySelector('#play').addEventListener('click', () => playing ? pause() : play());
+  document.querySelector('#mute').addEventListener('click', toggleMute);
   document.querySelector('#seek').addEventListener('input', (event) => seek(Number(event.target.value)));
   document.querySelector('#scene-select').addEventListener('change', (event) => seek(Number(event.target.value)));
   document.querySelectorAll('[data-scene]').forEach((button) => button.addEventListener('click', () => seek(SCENES[Number(button.dataset.scene)].start + 1)));
@@ -144,11 +167,12 @@ async function start() {
     if (event.code === 'Space') { event.preventDefault(); playing ? pause() : play(); }
     if (event.code === 'ArrowRight') { event.preventDefault(); seek(Math.min(DURATION, currentTime + 0.5)); }
     if (event.code === 'ArrowLeft') { event.preventDefault(); seek(Math.max(0, currentTime - 0.5)); }
+    if (event.code === 'KeyM') { event.preventDefault(); toggleMute(); }
   });
   document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
   window.pelican = Object.freeze({
     ready: true, renderAt, seek, play, pause, duration: DURATION, width: WIDTH, height: HEIGHT,
-    getState: () => ({ time: currentTime, playing, frame: locate(currentTime), brushVerified: brush.verified }),
+    getState: () => ({ time: currentTime, playing, frame: locate(currentTime), brushVerified: brush.verified, audio: audio.getState() }),
   });
 }
 

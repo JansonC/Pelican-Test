@@ -62,7 +62,7 @@ export async function withRenderer(callback, { url } = {}) {
     if (startupError) throw new Error(`Preview initialization: ${startupError}`);
     const shot = async (time) => {
       await page.evaluate((t) => window.pelican.renderAt(t), time);
-      return page.screenshot({ type: 'png', clip: { x: 0, y: 0, width: 1920, height: 1080 }, captureBeyondViewport: false });
+      return page.screenshot({ type: 'png', optimizeForSpeed: true, clip: { x: 0, y: 0, width: 1920, height: 1080 }, captureBeyondViewport: false });
     };
     const result = await callback({ page, shot, errors, browser, url });
     if (errors.length) throw new Error(`Browser errors: ${errors.join('\n')}`);

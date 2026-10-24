@@ -3,6 +3,7 @@ import { ROAD_Y, clamp } from '../beat/timeline.js';
 import { line, text, SANS } from '../kit/canvas.js';
 import { layer } from '../kit/materials.js';
 import { seeded, smooth } from '../kit/math.js';
+import { CUES } from '../beat/events.js';
 
 export const scene = SCENES[15];
 export const finished = true;
@@ -76,9 +77,9 @@ function buildLevel() {
 }
 
 export function prepare() { level = buildLevel(); }
-export function jumpAt(localT) { if (!Number.isFinite(localT) || localT <= 2 || localT >= 4) return 0; return Math.sin(((localT - 2) / 2) * Math.PI); }
-export function coinAt(localT) { if (!Number.isFinite(localT)) return 1; return 1 - smooth((localT - 2.72) / 0.28); }
-export function oneUpAt(localT) { if (!Number.isFinite(localT)) return 0; return smooth((localT - 2.85) / 0.12) * (1 - smooth((localT - 3.72) / 0.34)); }
+export function jumpAt(localT) { const start = CUES.jump - scene.start; if (!Number.isFinite(localT) || localT <= start || localT >= start + 2) return 0; return Math.sin(((localT - start) / 2) * Math.PI); }
+export function coinAt(localT) { if (!Number.isFinite(localT)) return 1; return 1 - smooth((localT - (CUES.coin - scene.start)) / 0.25); }
+export function oneUpAt(localT) { if (!Number.isFinite(localT)) return 0; return smooth((localT - (CUES.oneUp - scene.start - 0.15)) / 0.12) * (1 - smooth((localT - 3.72) / 0.34)); }
 export function animationFrameAt(localT) { if (!Number.isFinite(localT)) return 0; return Math.floor(Math.max(0, localT) * 10 + 1e-9); }
 export function pixelFrameAt(localT) { return animationFrameAt(localT) % 4; }
 

@@ -28,7 +28,11 @@
     "review:stage3-c": "node tools/stage3-c.mjs",
     "demo:stage3-c": "node tools/stage3-c-demo.mjs",
     "review:stage3-d": "node tools/stage3-d.mjs",
-    "demo:stage3-d": "node tools/stage3-d-demo.mjs"
+    "demo:stage3-d": "node tools/stage3-d-demo.mjs",
+    "audio:samples": "node tools/audio.mjs --samples",
+    "audio:render": "node tools/audio.mjs",
+    "review:audio": "node tools/audio-review.mjs",
+    "demo:stage4": "node tools/stage4-demo.mjs"
   },
   "dependencies": {
     "@fontsource-variable/noto-serif-sc": "5.3.1",

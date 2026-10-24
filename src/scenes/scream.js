@@ -3,6 +3,7 @@ import { text, line, SANS } from '../kit/canvas.js';
 import { seeded, smooth, lerp } from '../kit/math.js';
 import { layer, xuanPaper } from '../kit/materials.js';
 import { ROAD_Y } from '../beat/timeline.js';
+import { CUES } from '../beat/events.js';
 
 export const scene = SCENES[12];
 export const finished = true;
@@ -105,11 +106,11 @@ function drawBoardwalk(ctx, random) {
 }
 
 export function waveTensionAt(localT) {
-  return smooth((localT - 2) / 0.45) * (1 - smooth((localT - 4.35) / 0.65));
+  return smooth((localT - (CUES.scream - scene.start)) / 0.45) * (1 - smooth((localT - 4.35) / 0.65));
 }
 
 export function pedestrianAt(localT, index = 0) {
-  const alarm = smooth((localT - 2 - index * 0.13) / 0.32);
+  const alarm = smooth((localT - (CUES.scream - scene.start) - index * 0.13) / 0.32);
   const mouth = alarm * (1 - smooth((localT - 4.65) / 0.65) * 0.18);
   return { alarm, mouth, hand: lerp(0, 1, alarm) };
 }

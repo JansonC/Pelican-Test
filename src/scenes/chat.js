@@ -3,6 +3,7 @@ import { text, line, SANS } from '../kit/canvas.js';
 import { layer } from '../kit/materials.js';
 import { seeded, smooth } from '../kit/math.js';
 import { ROAD_Y, quantizeTime } from '../beat/timeline.js';
+import { CUES } from '../beat/events.js';
 
 export const scene = SCENES[16];
 export const finished = true;
@@ -95,7 +96,7 @@ function drawMainWindow(ctx, x, y, width, height, localT, jitter) {
   bubble(ctx, '你也在赶路吗？', chatX + 22, y + 126, 139, '#e6eef0', '#476d7d');
   bubble(ctx, '正在穿过第 17 幕。', chatX + chatW - 191, y + 170, 169, '#c7dcd0', '#3c6e5c');
   if (messageAt(localT)) {
-    const reveal = smooth((localT - 2) / 0.24);
+    const reveal = smooth((localT - (CUES.message - scene.start)) / 0.24);
     if (reveal > 0) { ctx.save(); ctx.globalAlpha = reveal; bubble(ctx, '新消息：保持踏频。', chatX + 34, y + 228, 177, '#d5e7dc', '#3d705b'); ctx.restore(); }
   }
   const cursor = (Math.floor(Math.max(0, localT) * 2) % 2) ? 1 : 0;
@@ -105,13 +106,13 @@ function drawMainWindow(ctx, x, y, width, height, localT, jitter) {
 }
 
 export function windowJitterAt(localT) {
-  const envelope = smooth((localT - 2) / 0.18) * (1 - smooth((localT - 4.25) / 0.38));
+  const envelope = smooth((localT - (CUES.message - scene.start)) / 0.18) * (1 - smooth((localT - 4.25) / 0.38));
   if (envelope <= 0) return { x: 0, y: 0, amount: 0 };
-  const pulse = Math.exp(-((((localT - 2) % 0.5) / 0.1) ** 2));
+  const pulse = Math.exp(-((((localT - (CUES.message - scene.start)) % 0.5) / 0.1) ** 2));
   return { x: Math.sin(localT * 74.2) * (2.4 + pulse * 6.5) * envelope, y: Math.cos(localT * 67.7) * (1.1 + pulse * 3.5) * envelope, amount: envelope };
 }
 
-export function messageAt(localT) { return localT >= 2; }
+export function messageAt(localT) { return localT >= CUES.message - scene.start; }
 
 export function animationFrameAt(time) { return Math.floor((time + 1e-9) * 10); }
 

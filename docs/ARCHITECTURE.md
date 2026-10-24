@@ -70,6 +70,26 @@ p5.brush 的 HB、charcoal 和 2B 笔触通过独立适配器渲染，读取为�
 确认操纵杆和轮相一起保持／更新，并用完整画面检查世界位移仍然平滑。
 批次 B／C／D 合辑工具在存在同版本验收记录时，将实际导出帧与验收截图逐像素比对。诺斯费拉图场景导出 `shadowOutlineAt(localT, pose)`，示波器导出 `scopeOutlineAt(localT, pose)`，合成器在 89 秒边界按同一姿态重建 14→15 通电轮廓；两幕都不依赖上一帧状态。
 
+## 音频
+
+`audio/score.js` 只包含数据与纯函数，和 Node 工具、浏览器都兼容；
+`audio/instruments.js` 把事件转换为固定种子的单音 PCM；`audio/wav.js` 编码立体声 PCM16。
+`audio/engine.js` 是浏览器 Web Audio 模块，实时和离线共用音符缓冲、路由与乐谱，不能导入 Node API。
+Node 导出入口为 `tools/audio.mjs`，通过无头浏览器运行 `OfflineAudioContext`。
+
+`src/beat/events.js` 管理音画同步点和蒸汽波速度、位置积分、半拍跳针；场景与音频共同读取。
+事件包含绝对 `time`、`duration`、`end`、`instrument`、`midi`、`gain`、`pan`、`role`，
+芯片事件另外指定四个独立且单声部的 `channel`。所有事件尾音受当前幕的 `end` 限制。
+共享混响在像素幕与蒸汽波幕静音；蒸汽波使用预先合成、变速的独立湿声缓冲。
+Outro 的音乐与混响一起淡出，最后车铃走独立通道。
+
+播放状态留在 `src/main/index.js` 与传输对象中。画面读取音频输出时钟，
+暂停清除前瞻调度和声源；跳转按目标位置重新调度持续音；静音不改变播放位置。
+首次播放准备磁带缓冲，并由 `audio/synth-worker.js` 在后台线程合成单音；
+音符缓冲按乐谱实时调度，避免重建齐奏时阻塞主线程或错过起音。
+离线分段先从五秒前重建信号，再按整数采样裁切；验证工具与全长 WAV 对比误差。
+源码指纹包含 `audio/*.js`，因此不能把旧版音乐与新版图像混合恢复导出。
+
 ## 文件职责
 
 - `PLAN.md`：创作要求、分阶段计划与验收范围。

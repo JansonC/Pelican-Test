@@ -2,7 +2,7 @@
 
 一只鹈鹕沿连续道路骑车，穿过画框，在二十个时代与画风之间旅行。所有画面用代码绘制，音频采用程序合成。
 
-当前提供阶段 3 批次 D 的无声预览：新增示波器、像素游戏、聊天窗口、蒸汽波和代码美学，二十幕美术全部完成。完整时间轴仍为 137 秒；音乐依 [PLAN.md](PLAN.md) 分阶段制作。
+当前提供阶段 4 有声预览：二十幕美术与原创程序合成配乐贯穿完整 137 秒，包含逐幕音色、提示音、蒸汽波变速与最后车铃。阶段要求见 [PLAN.md](PLAN.md)，乐谱与音频实现见 [audio/README.md](audio/README.md)。
 
 ## 环境与启动
 
@@ -17,7 +17,7 @@ npm run doctor
 npm run dev
 ```
 
-打开 <http://127.0.0.1:5173>。空格播放/暂停，左右方向键前后移动半秒；底部进度条、年代按钮与下拉列表均可跳转。预览默认暂停。
+打开 <http://127.0.0.1:5173>。空格播放/暂停，左右方向键前后移动半秒，M 静音/开声；底部进度条、年代按钮与下拉列表均可跳转。预览默认暂停，首次播放会准备原创音色，随后画面由音频时钟驱动。
 
 ```powershell
 npm test
@@ -117,6 +117,27 @@ npm run demo:stage3-d
 
 `demo:stage3-d` 以 30 fps 导出五段各 7 秒的无声 MP4（前后各含半秒相邻画框）；35 秒合辑为 `out/stage3-d/batch-d.mp4`，独立片段为 `scope.mp4`、`pixel.mp4`、`chat.mp4`、`vaporwave.mp4`、`code.mp4`。支持 `--fps 60`、`--tag`、`--resume`、`--overwrite`。
 
+## 阶段 4 · 音乐与有声 Demo
+
+```powershell
+npm run audio:samples
+npm run audio:render
+npm run review:audio
+npm run demo:stage4
+```
+
+主旋律短样为 `out/audio/theme.wav`（12 秒），蒸汽波短样为 `out/audio/vaporwave.wav`（6 秒）；
+完整 48 kHz 立体声 WAV 为 `out/audio/mix.wav`（137 秒），事件谱与采样位置为 `score.json`、`cues.json`。
+`review:audio` 验证各幕与音效起音、离线分段重建、严格四声道芯片、结尾静音、音频时钟以及播放／暂停／拖动／静音。
+播放器截图为 `out/stage4/preview.png` 与 `mobile.png`。
+
+`demo:stage4` 导出完整 1080p、30 fps 的 `out/stage4/pelican-with-music.mp4`（137 秒，H.264/AAC），
+同时生成 `sync-sheet.png`，完整解码并把 AAC 关键瞬态与原始 WAV 做相关性对齐。
+支持 `--fps 60`、`--tag`、`--resume`、`--overwrite`，恢复要求与已验证音轨的源码指纹一致。
+例如：`npm run demo:stage4 -- --tag stage4-music --resume --overwrite`。
+已有完整 MP4 时，`npm run demo:stage4 -- --verify-only` 只检查视频与音轨并刷新同步接触表。
+阶段 4 完成后等待旋律、音色、动态和同步反馈，再进入整体打磨。
+
 ## 截图、接触表与视频
 
 ```powershell
@@ -135,7 +156,7 @@ npm run encode -- --frames frames/full-30 --out out/pelican-silent.mp4
 
 时间范围使用半开区间 `[from, to)`。`--from`、`--to` 的单位为秒，帧文件名使用全片绝对帧号。完整视频长 137 秒，对应 30 fps 的 4,110 帧或 60 fps 的 8,220 帧。
 
-渲染中断后，以完全相同的参数添加 `--resume` 继续；工具会检查源码指纹、时间范围和帧率，避免混合不同版本画面。编码默认不覆盖已有视频，需要时显式传 `--overwrite`。可用 `--audio out/audio/mix.wav` 合成音轨；当前未制作音频。
+渲染中断后，以完全相同的参数添加 `--resume` 继续；工具会检查源码指纹、时间范围和帧率，避免混合不同版本画面。编码默认不覆盖已有视频，需要时显式传 `--overwrite`。可用 `--audio out/audio/mix.wav` 合成音轨；分段编码会从全片音轨的对应采样位置开始。
 
 预览与截图均通过 `window.pelican.renderAt(t)` 绘制，资源就绪以 `window.pelican.ready` 为准。`?t=32` 可以直接定位；`?export=1&t=32` 隐藏界面并固定为 1920×1080。
 
@@ -145,12 +166,12 @@ npm run encode -- --frames frames/full-30 --out out/pelican-silent.mp4
 src/kit/       绘图、材质、固定随机数与 p5.brush 接入
 src/beat/      节拍、时长、场景定位与帧时间
 src/rig/       骨骼姿势、两段腿部求解与骨架绘制
-src/scenes/    每幕一个文件，15 幕正式美术与 5 幕标名占位
+src/scenes/    每幕一个文件，20 幕正式美术
 src/main/      播放器、合成、道路、镜头、Intro 与 Outro
 tools/         环境检查、截图、接触表、逐帧渲染、编码与浏览器验证
 test/          时间边界、分段帧序列与踩踏约束验证
 briefs/        场景美术简报
-audio/         程序合成音频
+audio/         原创乐谱、音色、Web Audio 调度与 PCM WAV 编码
 docs/          接口说明、阶段状态
 public/        原创静态资源及第三方许可文本
 ```

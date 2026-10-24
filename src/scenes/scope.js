@@ -3,6 +3,7 @@ import { ROAD_Y, clamp } from '../beat/timeline.js';
 import { line, text, SANS } from '../kit/canvas.js';
 import { layer } from '../kit/materials.js';
 import { lerp, seeded, smooth } from '../kit/math.js';
+import { CUES } from '../beat/events.js';
 
 export const scene = SCENES[14];
 export const finished = true;
@@ -64,7 +65,7 @@ export function scopeOutlineAt(localT, pose = {}) {
 export const vectorOutlineAt = scopeOutlineAt;
 
 export function scopeDialAt(localT) {
-  const wrong = smooth((localT - 2) / 0.22) * (1 - smooth((localT - 3.45) / 0.48));
+  const wrong = smooth((localT - (CUES.wrongDial - scene.start)) / 0.22) * (1 - smooth((localT - 3.45) / 0.48));
   const settle = smooth((localT - 3.45) / 0.52);
   return { wrong, settle, angle: lerp(-0.5, 1.35, wrong) + settle * -0.22, lissajous: wrong > 0.04 };
 }

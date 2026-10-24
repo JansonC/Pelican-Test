@@ -1,8 +1,11 @@
 import { SCENES } from './catalog.js';
 import { text, line, SANS } from '../kit/canvas.js';
 import { layer } from '../kit/materials.js';
-import { seeded, smooth } from '../kit/math.js';
+import { seeded } from '../kit/math.js';
 import { ROAD_Y } from '../beat/timeline.js';
+import { tapeSkipAt as skipAt } from '../beat/events.js';
+
+export { tapeRateAt, tapeSkipAt as skipAt } from '../beat/events.js';
 
 export const scene = SCENES[17];
 export const finished = true;
@@ -110,20 +113,6 @@ function buildBust() {
     line(ctx, [[-35, -39], [0, -29], [38, -40]], INDIGO, 5);
     for (let i = 0; i < 6; i += 1) line(ctx, [[-101 + i * 39, 14], [-92 + i * 39, 150]], i % 2 ? CYAN : PINK, 5);
   });
-}
-
-export function tapeRateAt(localT) {
-  const slowRate = 0.7937005259840998;
-  if (localT < 2) return 1 - smooth(localT / 2) * (1 - slowRate);
-  if (localT < 4) return slowRate;
-  return slowRate + smooth((localT - 4) / 2) * (1 - slowRate);
-}
-
-export function skipAt(localT) {
-  const active = localT >= 2 && localT < 4;
-  if (!active) return { active: false, phase: 0, count: 0 };
-  const phase = ((localT - 2) % 0.5) / 0.5;
-  return { active: true, phase, count: Math.floor((localT - 2) / 0.5) };
 }
 
 export function prepare() {

@@ -7,6 +7,7 @@ import { text, line, SANS, withAlpha } from '../kit/canvas.js';
 import { smooth, lerp } from '../kit/math.js';
 import { locate, STAGE_WIDTH as W, PANEL_WIDTH, TRAVEL_SPEED, ROAD_Y, quantizeTime } from '../beat/timeline.js';
 import { portraitAt } from './presentation.js';
+import { CUES } from '../beat/events.js';
 
 const PAPER = '#eee8da';
 const INK = '#354136';
@@ -186,8 +187,8 @@ export function createCompositor({ paper }) {
     ctx.fill();
     line(ctx, [[440, 338], [426, 470]], '#494c40', 8);
     line(ctx, [[560, 338], [574, 470]], '#494c40', 8);
-    if (localT >= 11.5 && localT < 11.8) {
-      drawPelican(ctx, poseAt(125 + localT), { x: lerp(-220, 1220, (localT - 11.5) / 0.3), y: 352, scale: 0.52 });
+    if (125 + localT >= CUES.bell && 125 + localT < CUES.bell + 0.3) {
+      drawPelican(ctx, poseAt(125 + localT), { x: lerp(-220, 1220, (125 + localT - CUES.bell) / 0.3), y: 352, scale: 0.52 });
     }
     ctx.fillStyle = '#89806a';
     ctx.fillRect(70, 351, 860, 155);
@@ -204,8 +205,8 @@ export function createCompositor({ paper }) {
     ctx.fillStyle = '#f2eddf';
     ctx.fillRect(401, 319, 198, 48);
     text(ctx, '鹈鹕（本人）', 500, 352, { size: 23, align: 'center', weight: 600 });
-    for (const flash of [4, 5, 6]) {
-      const alpha = Math.max(0, 1 - Math.abs(localT - flash) / 0.09) * 0.7;
+    for (const flash of CUES.flashes) {
+      const alpha = Math.max(0, 1 - Math.abs(125 + localT - flash) / 0.09) * 0.7;
       if (alpha) withAlpha(ctx, alpha, () => { ctx.fillStyle = '#fffef7'; ctx.fillRect(0, 0, 1000, 562.5); });
     }
   }
