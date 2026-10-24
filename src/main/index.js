@@ -15,7 +15,7 @@ document.querySelector('#app').innerHTML = `
   <div class="shell">
     <header class="masthead">
       <div class="identity"><div class="monogram" aria-hidden="true">鹈</div><div><h1>鹈鹕测试</h1><div class="subtitle">The Pelican Test · An improbable art history</div></div></div>
-      <div class="reel-meta"><strong>批次 B · 十一幕已完成</strong><br />20 个时代 · 02:17 · 无声</div>
+      <div class="reel-meta"><strong>批次 C · 十五幕已完成</strong><br />20 个时代 · 02:17 · 无声</div>
     </header>
     <section class="screen-wrap" aria-label="动画预览">
       <div id="screen"></div><div class="loading" role="status">正在展开这段尚待考证的艺术史……</div>

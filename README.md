@@ -2,7 +2,7 @@
 
 一只鹈鹕沿连续道路骑车，穿过画框，在二十个时代与画风之间旅行。所有画面用代码绘制，音频采用程序合成。
 
-当前提供阶段 3 批次 B 的无声预览：新增玛雅抄本、莫卧儿细密画、八大山人写意、爪哇皮影戏，连同前两轮共完成十一幕美术，其余 9 幕保留标名占位。完整时间轴仍为 137 秒；后续批次与音乐依 [PLAN.md](PLAN.md) 分阶段制作。
+当前提供阶段 3 批次 C 的无声预览：新增浮世绘、星月夜、呐喊、诺斯费拉图，连同前几轮共完成十五幕美术，其余 5 幕保留标名占位。完整时间轴仍为 137 秒；后续批次与音乐依 [PLAN.md](PLAN.md) 分阶段制作。
 
 ## 环境与启动
 
@@ -95,6 +95,17 @@ npm run demo:stage3-b
 npm run demo:stage3-b -- --tag stage3-b-delivery --resume --overwrite
 ```
 
+阶段 3 批次 C 的四幕连续位于 65–89 秒，每幕 6 秒，复查与短片命令：
+
+```powershell
+npm run review:stage3-c
+npm run demo:stage3-c
+```
+
+`review:stage3-c` 输出四幕各入场／高光／离场的 12 张 1080p 图、接触表、四幕高光、24 张节拍事件图和 5 个边界的前中后三帧，检查乱序跳转逐像素一致性，并验证浮世绘风线、星群旋转、呐喊行人及诺斯费拉图影子轮廓事件。产物位于 `out/stage3-c/`；`?t=68`、`?t=74`、`?t=80`、`?t=86` 分别定位高光。
+
+`demo:stage3-c` 以 30 fps 导出四段各 7 秒的无声 MP4（前后各含半秒相邻画框）；28 秒合辑为 `out/stage3-c/batch-c.mp4`，独立片段为 `ukiyo.mp4`、`starry.mp4`、`scream.mp4`、`nosferatu.mp4`。支持 `--fps 60`、`--tag`、`--resume`、`--overwrite`。
+
 ## 截图、接触表与视频
 
 ```powershell
@@ -123,7 +134,7 @@ npm run encode -- --frames frames/full-30 --out out/pelican-silent.mp4
 src/kit/       绘图、材质、固定随机数与 p5.brush 接入
 src/beat/      节拍、时长、场景定位与帧时间
 src/rig/       骨骼姿势、两段腿部求解与骨架绘制
-src/scenes/    每幕一个文件，11 幕正式美术与 9 幕标名占位
+src/scenes/    每幕一个文件，15 幕正式美术与 5 幕标名占位
 src/main/      播放器、合成、道路、镜头、Intro 与 Outro
 tools/         环境检查、截图、接触表、逐帧渲染、编码与浏览器验证
 test/          时间边界、分段帧序列与踩踏约束验证
